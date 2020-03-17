@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/libktx.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var engine = null;
+        var scene = null;
+        var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+
+
+            var camera = new BABYLON.ArcRotateCamera("cam", -Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero());
+            var anchor = new BABYLON.TransformNode("");
+            camera.wheelDeltaPercentage = 0.21;
+            camera.attachControl(canvas, true);
+
+            var sun = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
+            sun.diffuse = new BABYLON.Color3(1, 1, 1);
+            sun.specular = new BABYLON.Color3(1, 1, 1);
+            sun.groundColor = new BABYLON.Color3(0, 0, 0);
+
+
+            var mainStage = BABYLON.Mesh.CreateBox("Mainstage", 80, scene);
+            mainStage.position.y = 0;
+            mainStage.scaling.y = 0.01;
+            var mainStageMaterial = new BABYLON.StandardMaterial("MainstageM", scene);
+            mainStageMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+            mainStage.material = mainStageMaterial;
+
+            var sphere0 = BABYLON.Mesh.CreateSphere("Sphere0", 16, 5, scene);
+            sphere0.position = new BABYLON.Vector3(0, 2.5, -15);
+            var sphere0Material = new BABYLON.StandardMaterial("Sphere0M", scene);
+            sphere0Material.diffuseColor = BABYLON.Color3.Blue();
+            sphere0.material = sphere0Material;
+
+            var sphere1 = BABYLON.Mesh.CreateSphere("Sphere1", 16, 5, scene);
+            sphere1.position = new BABYLON.Vector3(-30, 2.5, 15);
+            var sphere1Material = new BABYLON.StandardMaterial("Sphere1M", scene);
+            sphere1Material.diffuseColor = BABYLON.Color3.Red();
+            sphere1.material = sphere1Material;
+
+            var sphere2 = BABYLON.Mesh.CreateSphere("Sphere2", 16, 5, scene);
+            sphere2.position = new BABYLON.Vector3(30, 2.5, 15);
+            var sphere2Material = new BABYLON.StandardMaterial("Sphere2M", scene);
+            sphere2Material.diffuseColor = BABYLON.Color3.Yellow();
+            sphere2.material = sphere2Material;
+
+
+            // Activate full-screen 2d GUI  
+            var adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("interface", true)
+            var mainbox = new BABYLON.GUI.Rectangle();
+            mainbox.height = "300px";
+            mainbox.width = "300px";
+            // mainbox.paddingRight = "2px";
+            // mainbox.paddingRight = 0;
+            mainbox.cornerRadius = 4;
+            mainbox.color = "green";
+            mainbox.thickness = 8;
+            mainbox.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+            // mainbox.background = "#221100";
+            adt.addControl(mainbox);
+            mainbox.isVisible = false;
+            // console.log(mainbox);
+
+            var header = new BABYLON.GUI.Rectangle();
+            header.height = "22px";
+            header.width = "96%";
+            // header.top = "-43%";
+            header.left = "0%";
+            header.cornerRadius = 4;
+            header.color = "yellow";
+            header.thickness = 1;
+            header.background = "#221100";
+            header.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            mainbox.addControl(header);
+            // console.log(header);
+
+            var headertext = new BABYLON.GUI.TextBlock();
+            headertext.text = "Do you want to Play!";
+            headertext.color = "white";
+            headertext.fontSize = 12;
+            headertext.textWrapping = true;
+            header.addControl(headertext);
+
+            var contentrect = new BABYLON.GUI.Rectangle();
+            contentrect.height = "80%";
+            contentrect.width = "95%";
+            // contentrect.top = "7%";
+            // contentrect.left = "0%";
+            contentrect.cornerRadius = 4;
+            contentrect.color = "yellow";
+            contentrect.thickness = 1;
+            // footer.background = "#221100";
+            mainbox.addControl(contentrect);
+            contentrect.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+            // console.log(footer);
+            // contentrect.adaptHeightToChildren = true;
+            // mainbox.adaptHeightToChildren = true;
+
+            var contentpanel = new BABYLON.GUI.StackPanel("contentpanel");
+            contentpanel.isVertical = true;
+            // contentpanel.height = "99%";
+            // contentpanel.width = "95%";
+            // contentpanel.top = "0%";
+            contentrect.addControl(contentpanel);
+
+
+            // var rectheight = "11%";
+            // var rectwidth = "99%";
+            var buttheight = "20px";
+            var buttwidth = "97%";
+            var but1rect;
+            var butt1;
+            var labels = ["Yes", "NO"];
+            var buttons = [];
+            var buttonrects = [];
+            //-----------------------------------------------------
+            for (var i = 0; i < 2; i++) {
+                butt1 = new BABYLON.GUI.Button.CreateSimpleButton("butt" + i, "");
+                butt1._children[0].text = labels[i];
+                butt1.width = buttwidth;
+                butt1.height = buttheight;
+                butt1.fontSize = 12;
+                butt1.fontStyle = "bold";
+                butt1.fontFamily = "Georgia";
+                butt1.background = "teal";
+                // butt1.cornerRadius = 4;
+                // butt1.paddingBottom = "2px";
+                // butt1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+                // but1rect.addControl(butt1);
+                buttons.push(butt1);
+            }
+
+            buttons[0].onPointerDownObservable.add(function (d, s) {
+                s.currentTarget.parent.parent.parent.linkedMesh.material.diffuseColor = BABYLON.Color3.Random();
+            });
+            // buttons[0].onPointerEnterObservable.add(function () { canvas.style.cursor = "pointer"; });
+            // buttons[0].onPointerOutObservable.add(function () { canvas.style.cursor = "auto"; });
+
+            buttons[1].onPointerDownObservable.add(function (d, s) {
+                s.currentTarget.parent.parent.parent.linkedMesh.material.diffuseColor = BABYLON.Color3.Random();
+            });
+            // buttons[1].onPointerEnterObservable.add(function () { canvas.style.cursor = "pointer"; });
+            // buttons[1].onPointerOutObservable.add(function () { canvas.style.cursor = "auto"; });
+
+            // buttons[2].onPointerDownObservable.add(function(d, s) {
+            //     s.currentTarget.parent.parent.parent.linkedMesh.material.diffuseColor = BABYLON.Color3.Random();        
+            // });
+            // buttons[2].onPointerEnterObservable.add(function() { canvas.style.cursor = "pointer"; });
+            // buttons[2].onPointerOutObservable.add(function() { canvas.style.cursor = "auto"; });
+
+            // buttons[3].onPointerDownObservable.add(function(d, s) {
+            //     s.currentTarget.parent.parent.parent.linkedMesh.material.diffuseColor = BABYLON.Color3.Random();        
+            // });
+            // buttons[3].onPointerEnterObservable.add(function() { canvas.style.cursor = "pointer"; });
+            // buttons[3].onPointerOutObservable.add(function() { canvas.style.cursor = "auto"; });
+
+
+            for (var i = 0; i < 4; i++) {
+                // buttonrects[i].addControl(buttons[i]);
+                contentpanel.addControl(buttons[i]);
+            }
+
+
+            // -----------------------------------------------------------------------------
+            //  action manager area
+
+            var overMesh = function (bjsEvent) {
+                console.log(bjsEvent);
+                mainbox.isVisible = true;
+                mainbox.linkWithMesh(bjsEvent.meshUnderPointer);
+                mainbox.linkOffsetY = -80;
+            }
+
+            var exitMesh = function (bjsEvent) {
+                // console.log(bjsEvent);
+                // mainbox.isVisible = false;
+                // mainbox.linkWithMesh(null);
+            }
+
+            var prepareOverOut = function (mesh) {
+
+                mesh.actionManager = new BABYLON.ActionManager(scene);
+
+                mesh.actionManager.registerAction(
+                    new BABYLON.ExecuteCodeAction(
+                        BABYLON.ActionManager.OnPointerOverTrigger, overMesh
+                    )
+                );
+
+                mesh.actionManager.registerAction(
+                    new BABYLON.ExecuteCodeAction(
+                        BABYLON.ActionManager.OnPointerOutTrigger, exitMesh
+                    )
+                );
+
+            }
+
+            prepareOverOut(sphere0);
+            prepareOverOut(sphere1);
+            prepareOverOut(sphere2);
+
+            // click on ground to hide mesh-menu.
+            mainStage.actionManager = new BABYLON.ActionManager(scene);
+
+            mainStage.actionManager.registerAction(
+                new BABYLON.ExecuteCodeAction(
+                    BABYLON.ActionManager.OnPickDownTrigger, function () {
+                        mainbox.isVisible = false;
+                        mainbox.linkWithMesh(null);
+                    }
+                )
+            );
+            // scene.debugLayer.show();
+
+            return scene;
+        };
+
+        engine = createDefaultEngine();
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();
+
+        engine.runRenderLoop(function () {
+            if (scene) {
+                scene.render();
+            }
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/libktx.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var engine = null;
+        var scene = null;
+        var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+
+            // Setup environment
+            var light0 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 2, 8), scene);
+            var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 35, new BABYLON.Vector3(0, 0, 0), scene);
+            camera.attachControl(canvas, true);
+            scene.clearColor = BABYLON.Color3.Black();
+
+
+
+            // Fountain object
+            var fountain = BABYLON.Mesh.CreateBox("foutain", 2.0, scene);
+            fountain.position.x = 10;
+            fountain.position.y = 1;
+            fountain.position.z = 0;
+            fountain.rotation.x = -440;
+            fountain.rotation.y = -100;
+            // Ground
+            // var ground = BABYLON.Mesh.CreatePlane("ground", 50.0, scene);
+            // ground.position = new BABYLON.Vector3(0, -10, 0);
+            // ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+
+            // ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+            // ground.material.backFaceCulling = false;
+            // ground.material.diffuseColor = new BABYLON.Color3(0.3, 0.3, 1);
+
+
+            //Smoke
+            var smokeSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+            smokeSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
+            smokeSystem.emitter = fountain; // the starting object, the emitter
+            smokeSystem.minEmitBox = new BABYLON.Vector3(-1, 1, -1); // Starting all from
+            smokeSystem.maxEmitBox = new BABYLON.Vector3(1, 1, 1); // To...
+
+            smokeSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.1, 1.0);
+            smokeSystem.color2 = new BABYLON.Color4(0.1, 0.1, 0.1, 1.0);
+            smokeSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+
+            smokeSystem.minSize = 0.5;
+            smokeSystem.maxSize = 2;
+
+            smokeSystem.minLifeTime = 0.3;
+            smokeSystem.maxLifeTime = 1.5;
+
+            smokeSystem.emitRate = 500;
+
+            // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+            smokeSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+            smokeSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+            smokeSystem.direction1 = new BABYLON.Vector3(0, 8, 0);
+            smokeSystem.direction2 = new BABYLON.Vector3(0, 8, 0);
+
+            smokeSystem.minAngularSpeed = 0;
+            smokeSystem.maxAngularSpeed = Math.PI;
+
+            smokeSystem.minEmitPower = 1;
+            smokeSystem.maxEmitPower = 2;
+            smokeSystem.updateSpeed = 0.005;
+
+            smokeSystem.start();
+
+
+
+            // Create a particle system
+            var fireSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+
+            //Texture of each particle
+            fireSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
+
+            // Where the particles come from
+            fireSystem.emitter = fountain; // the starting object, the emitter
+            fireSystem.minEmitBox = new BABYLON.Vector3(-0.5, 1, -0.5); // Starting all from
+            fireSystem.maxEmitBox = new BABYLON.Vector3(0.5, 1, 0.5); // To...
+
+            // Colors of all particles
+            fireSystem.color1 = new BABYLON.Color4(1, 0.5, 0, 1.0);
+            fireSystem.color2 = new BABYLON.Color4(1, 0.5, 0, 1.0);
+            fireSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+
+            // Size of each particle (random between...
+            fireSystem.minSize = 0.5;
+            fireSystem.maxSize = 1;
+
+            // Life time of each particle (random between...
+            fireSystem.minLifeTime = 0.2;
+            fireSystem.maxLifeTime = 0.4;
+
+            // Emission rate
+            fireSystem.emitRate = 500;
+
+            // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+            fireSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+            // Set the gravity of all particles
+            fireSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+            // Direction of each particle after it has been emitted
+            fireSystem.direction1 = new BABYLON.Vector3(0, 8, 0);
+            fireSystem.direction2 = new BABYLON.Vector3(0, 8, 0);
+
+            // Angular speed, in radians
+            fireSystem.minAngularSpeed = 0;
+            fireSystem.maxAngularSpeed = Math.PI;
+
+
+            // Speed
+            fireSystem.minEmitPower = 1;
+            fireSystem.maxEmitPower = 3;
+            fireSystem.updateSpeed = 0.005;
+
+            // Start the particle system
+            fireSystem.start();
+
+            var fountain = BABYLON.Mesh.CreateBox("foutain", 2.0, scene);
+            fountain.position.x = -8;
+            fountain.position.y = -5;
+            fountain.position.z = 6;
+            fountain.rotation.x = -440;
+            fountain.rotation.y = -100;
+            // Ground
+            // var ground = BABYLON.Mesh.CreatePlane("ground", 50.0, scene);
+            // ground.position = new BABYLON.Vector3(0, -10, 0);
+            // ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+
+            // ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+            // ground.material.backFaceCulling = false;
+            // ground.material.diffuseColor = new BABYLON.Color3(0.3, 0.3, 1);
+
+
+            //Smoke
+            var smokeSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+            smokeSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
+            smokeSystem.emitter = fountain; // the starting object, the emitter
+            smokeSystem.minEmitBox = new BABYLON.Vector3(-1, 1, -1); // Starting all from
+            smokeSystem.maxEmitBox = new BABYLON.Vector3(1, 1, 1); // To...
+
+            smokeSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.1, 1.0);
+            smokeSystem.color2 = new BABYLON.Color4(0.1, 0.1, 0.1, 1.0);
+            smokeSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+
+            smokeSystem.minSize = 0.5;
+            smokeSystem.maxSize = 2;
+
+            smokeSystem.minLifeTime = 0.3;
+            smokeSystem.maxLifeTime = 1.5;
+
+            smokeSystem.emitRate = 500;
+
+            // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+            smokeSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+            smokeSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+            smokeSystem.direction1 = new BABYLON.Vector3(0, 8, 0);
+            smokeSystem.direction2 = new BABYLON.Vector3(0, 8, 0);
+
+            smokeSystem.minAngularSpeed = 0;
+            smokeSystem.maxAngularSpeed = Math.PI;
+
+            smokeSystem.minEmitPower = 1;
+            smokeSystem.maxEmitPower = 2;
+            smokeSystem.updateSpeed = 0.005;
+
+            smokeSystem.start();
+
+            // var plane6 = BABYLON.Mesh.CreatePlane("plane6", 40);
+            // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane6);
+
+            // var textstring=" MANAGER SIMULATOR"
+            // var text1 = new BABYLON.GUI.TextBlock();
+            // text1.text = textstring;
+            // text1.fontStyle=" Bold";
+            // text1.color = "Red";
+            // text1.outlineColor="Red";
+            // // console.log(text1.fontStyle)
+            // text1.fontSize = 74;
+            // var text2=new BABYLON.GUI.TextBlock();
+            // text2.text=" MANAGER SIMULATOR"
+            // text2.fontStyle="Bold";
+            // text2.color="orange";
+            // text2.fontSize=74;
+
+            // var text3=new BABYLON.GUI.TextBlock();
+            // text3.text=" MANAGER SIMULATOR"
+            // text3.fontStyle="Bold";
+            // text3.color="Grey";
+            // text3.fontSize=74;
+            // advancedTexture.addControl(text1);  
+            // advancedTexture.addControl(text2);
+            // advancedTexture.addControl(text3);
+            // plane6.position.y = 5;
+            //             plane6.position.z = -10;
+            //             plane6.position.x = -5; 
+            //             plane6.rotation.y=-60;
+            //             plane6.rotation.z=50;
+            //             plane6.rotation.x=90;
+
+
+            //plane6.rotation.z=90;
+
+            // Create a particle system
+            var fireSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+
+            //Texture of each particle
+            fireSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
+
+            // Where the particles come from
+            fireSystem.emitter = fountain; // the starting object, the emitter
+            fireSystem.minEmitBox = new BABYLON.Vector3(-0.5, 1, -0.5); // Starting all from
+            fireSystem.maxEmitBox = new BABYLON.Vector3(0.5, 1, 0.5); // To...
+
+            // Colors of all particles
+            fireSystem.color1 = new BABYLON.Color4(1, 0.5, 0, 1.0);
+            fireSystem.color2 = new BABYLON.Color4(1, 0.5, 0, 1.0);
+            fireSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+
+            // Size of each particle (random between...
+            fireSystem.minSize = 0.5;
+            fireSystem.maxSize = 1;
+
+            // Life time of each particle (random between...
+            fireSystem.minLifeTime = 0.2;
+            fireSystem.maxLifeTime = 0.4;
+
+            // Emission rate
+            fireSystem.emitRate = 500;
+
+            // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+            fireSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+            // Set the gravity of all particles
+            fireSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+            // Direction of each particle after it has been emitted
+            fireSystem.direction1 = new BABYLON.Vector3(0, 8, 0);
+            fireSystem.direction2 = new BABYLON.Vector3(0, 8, 0);
+
+            // Angular speed, in radians
+            fireSystem.minAngularSpeed = 0;
+            fireSystem.maxAngularSpeed = Math.PI;
+
+
+            // Speed
+            fireSystem.minEmitPower = 1;
+            fireSystem.maxEmitPower = 3;
+            fireSystem.updateSpeed = 0.005;
+
+            // Start the particle system
+            fireSystem.start();
+
+
+
+            var ground = BABYLON.MeshBuilder.CreateBox("ground", { width: 1000, depth: 1000, height: 5 }, scene);
+            ground.position.y = -2.5;
+            var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+            groundMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+            groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            ground.material = groundMaterial;
+            groundMaterial.alpha = 0;
+            // Dude
+            // BABYLON.SceneLoader.ImportMesh("him", "/scenes/Dude/", "Dude.babylon", scene, function (newMeshes2, particleSystems2, skeletons2) {
+            //     var dude = newMeshes2[0];
+
+            //     //dude.rotation.y = Math.PI;
+            //     dude.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+            //     dude.position = new BABYLON.Vector3(0, 0, 0);
+
+            //     scene.beginAnimation(skeletons2[0], 0, 100, true, 1.0);
+            // });
+
+            var pcs = new BABYLON.PointsCloudSystem("pcs", 1, scene)
+
+
+            // shared variables
+            var speed = 3;                  // particle max speed                            // current dot product
+
+            // recycle : reset the particle at the emitter origin
+            pcs.recycleParticle = function (particle) {
+                particle.position.x = BABYLON.Scalar.RandomRange(-28, 20);
+                particle.position.y = 14;
+                particle.position.z = BABYLON.Scalar.RandomRange(-35, 20);
+                particle.velocity = new BABYLON.Vector3(0.1, 0.5, -0.1)
+                particle.velocity.normalize();
+                particle.direction = -1;
+                particle.velocity.scaleInPlace(-speed * (0.1 + 0.5 * Math.random()));
+                var col = 0.2 + 0.8 * Math.random();
+                particle.color = new BABYLON.Color4(col, col, col, 1);
+            };
+
+            pcs.addPoints(100000, pcs.recycleParticle);
+            pcs.buildMeshAsync();
+
+
+            pcs.updateParticle = function (particle) {
+                // recycle if touched the ground
+                if ((particle.position.y + this.mesh.position.y) > 0.5 + 0.5 * Math.random() && particle.direction > 0) {
+                    this.recycleParticle(particle);
+                }
+
+                // update position
+                (particle.position).addInPlace(particle.velocity);      // update particle new position
+
+                // intersection
+                if (particle.intersectsMesh(ground) && particle.direction < 0) {
+                    particle.velocity.x *= -1;
+                    particle.velocity.y *= -0.5;
+                    particle.velocity.z *= -1;
+                    particle.direction = 1;
+                }
+            };
+
+            scene.registerAfterRender(() => {
+                pcs.setParticles();
+            });
+
+
+
+
+
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI();
+            advancedTexture.rootContainer.scaleX = window.devicePixelRatio;
+            advancedTexture.rootContainer.scaleY = window.devicePixelRatio;
+            var button3 = BABYLON.GUI.Button.CreateSimpleButton("but1", 'START');
+            advancedTexture.addControl(button3);
+            button3.top = "0px";
+            button3.left = "0px";
+            button3.width = '221px';
+            button3.height = '238px';
+            button3.cornerRadius = 20;
+            button3.color = "rgb(226, 88, 34)";
+            button3.fontSize = 47;
+            button3.fontFamily = "Georgia";
+            button3.thickness = 0;
+            button3.textBlock.outlineWidth = 8;
+            var oc = "rgb(169,169,169)";
+            button3.textBlock.outlineColor = oc;
+            advancedTexture.addControl(button3);
+            fred = setInterval(function () {
+                button3.textBlock.outlineColor = (button3.textBlock.outlineColor == oc ? "black" : oc);
+            }, 2000);
+
+            scene.onDispose = function () { clearInterval(fred) };
+
+            var scale = 0.6;
+
+
+            button3.onPointerUpObservable.add(function () {
+                window.location.href = "/level";
+            });
+
+
+            //scene.debugLayer.how();
+            return scene;
+        }
+
+
+        engine = createDefaultEngine();
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();
+
+        engine.runRenderLoop(function () {
+            if (scene) {
+                scene.render();
+            }
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+
+</html>

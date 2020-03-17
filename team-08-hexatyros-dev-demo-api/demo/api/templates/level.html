@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/libktx.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/meshwriter@1.2.3/dist/meshwriter.min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var scale = 0.1, MeshWriter, text1;
+        var engine = null;
+        var scene = null;
+        var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+            var camera = new BABYLON.ArcRotateCamera("cam", -Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero());
+            var anchor = new BABYLON.TransformNode("");
+            camera.wheelDeltaPercentage = 0.21;
+            camera.attachControl(canvas, true);
+            var scale = 0.1, MeshWriter, text1, text2, text3, text4;
+
+            // var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
+            // var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+            // skyboxMaterial.backFaceCulling = false;
+            // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("https://cdna.artstation.com/p/assets/images/images/002/579/818/large/sebastian-hamza-16.jpg?1463336409", scene);
+            // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+            // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            // skybox.material = skyboxMaterial;
+
+            scene.clearColor = new BABYLON.Color3.FromInts(128, 128, 128);
+            // scene.clearColor = BABYLON.Color3.White();
+            var levels = ["Skill match", "level detail 2", "level detail 3", "level detail 4", "level detail 5", "level detail 6", "level detail 7", "level detail 8", "level detail 9", "level detail 10"];
+            var manager = new BABYLON.GUI.GUI3DManager(scene);
+            var panel = new BABYLON.GUI.PlanePanel();
+            panel.margin = 0.3;
+            manager.addControl(panel);
+            panel.linkToTransformNode(anchor);
+            panel.position.x = 3.9;
+            panel.position.y = 1;
+
+            Writer = BABYLON.MeshWriter(scene, { scale: scale });
+            text1 = new Writer(
+                "Select the levels to play",
+                {
+                    "anchor": "center",
+                    "letter-height": 5,
+                    "color": "#15F4EE",
+                    "position": {
+                        "z": 10,
+                    }
+                }
+            );
+            var tmesh = text1.getMesh();
+            tmesh.position.y = -0.2;
+            tmesh.rotation = new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, -Math.PI / 2);
+            var hl = new BABYLON.HighlightLayer("hl1", scene);
+            hl.addMesh(tmesh, BABYLON.Color3.FromInts(21, 244, 238));
+            var addButton = function (name) {
+                var button = new BABYLON.GUI.HolographicButton(name, "orientation");
+
+                panel.addControl(button);
+                button.onPointerDownObservable.add(function () {
+                    window.location.href = "level/level" + name;
+
+                    // var hl = new BABYLON.HighlightLayer("hl1", scene);
+                    // hl.addMesh(button, BABYLON.Color3.Green());
+                });
+                button.onPointerUpObservable.add(function () {
+                    // textblock.text = "Up!";
+
+                });
+                button.onPointerEnterObservable.add(function () {
+                    // textblock.text = "Enter!";
+
+
+                });
+                button.onPointerOutObservable.add(function () {
+                    // textblock.text = "Out!";
+
+                });
+                button.onPointerMoveObservable.add(function () {
+                    var v = button.name;
+                    // switch (v) {
+                    //     case 1:
+                    //         alert("button " + v);
+                    //         break;
+                    //     case 2:
+                    //         alert("button " + v);
+                    //         break;
+                    //     case 3:
+                    //         alert("button " + v);
+                    //         break;
+                    //     case 4:
+                    //         alert("button " + v);
+                    //         break;
+                    //     case 5:
+                    //         alert("button " + v);
+                    //         break;
+
+                    // }
+                    // console.log(button.name);
+                });
+                var text1 = new BABYLON.GUI.TextBlock();
+                var skill = "kestrel"
+                text1.text = "Level " + panel.children.length + "\n" + levels[name - 1];
+                text1.color = "#15F4EE";
+                text1.fontSize = 30;
+                button.content = text1;
+
+                // button.text = "Level " + panel.children.length+"\n-SkillMatch";
+                // button.text.resizeToFit = true;
+                // button.text.height="20px";
+                //   button.text.width="20px";
+                // button.tooltipText="Skill Match"
+                button.backMaterial.albedoColor = BABYLON.Color3.Black();
+
+            }
+
+            // panel.blockLayout = true;
+            for (var index = 1; index < 6; index++) {
+                addButton(index);
+            }
+            panel.blockLayout = false;
+
+            var panel1 = new BABYLON.GUI.PlanePanel();
+            panel1.margin = 0.3;
+
+            manager.addControl(panel1);
+            panel1.linkToTransformNode(anchor);
+            panel1.position.x = 3.9;
+            panel1.position.y = -1;
+            var addButton1 = function (name) {
+                var button1 = new BABYLON.GUI.HolographicButton(name, "orientation");
+                panel1.addControl(button1);
+                var text2 = new BABYLON.GUI.TextBlock();
+                text2.text = "Level " + name + "\n" + levels[name - 1];
+                text2.color = "#15F4EE";
+                text2.fontSize = 30;
+                button1.content = text2;
+                button1.onPointerDownObservable.add(function () {
+                    var v = "level/level" + name;
+                    window.location.href = v;
+
+                });
+                button1.onPointerUpObservable.add(function () {
+                    // textblock.text = "Up!";
+
+                });
+                button1.onPointerEnterObservable.add(function () {
+                    // textblock.text = "Enter!";
+
+
+                });
+                button1.onPointerOutObservable.add(function () {
+                    // textblock.text = "Out!";
+
+                });
+                button1.onPointerMoveObservable.add(function () {
+                    var v = button1.name;
+                    //     switch (v) {
+                    //         case 6:
+                    //             alert("button " + v);
+                    //             break;
+                    //         case 7:
+                    //             alert("button " + v);
+                    //             break;
+                    //         case 8:
+                    //             alert("button " + v);
+                    //             break;
+                    //         case 9:
+                    //             alert("button " + v);
+                    //             break;
+                    //         case 10:
+                    //             alert("button " + v);
+                    //             break;
+
+                    //     }
+                    //     console.log(button1.name);
+                });
+            }
+            for (var index = 6; index < 11; index++) {
+                addButton1(index);
+            }
+            return scene;
+        };
+
+
+        engine = createDefaultEngine();
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();
+
+        engine.runRenderLoop(function () {
+            if (scene) {
+                scene.render();
+            }
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+
+</html>
