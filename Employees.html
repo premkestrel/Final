@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/libktx.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/meshwriter@1.2.3/dist/meshwriter.min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var scale = 0.1, MeshWriter, text1;
+        var engine = null;
+        var scene = null;
+        var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+            var camera = new BABYLON.ArcRotateCamera("cam", -Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero());
+            var anchor = new BABYLON.TransformNode("");
+            camera.wheelDeltaPercentage = 0.21;
+            camera.attachControl(canvas, true);
+            var scale = 0.1, MeshWriter, text1, text2, text3, text4;
+            scene.clearColor = new BABYLON.Color3.FromInts(128, 128, 128);
+            var Employee = [];
+            var gridbutton = [];
+            // var levels = ["Emp1", "Emp2", "Emp3", "Emp4", "Emp5", "Emp6", "Emp7", "Emp8", "Emp9", "Emp10", "Emp11", "Emp12"];
+            var levels = [];
+            // var skills = [{ skill: ["prem", "sk2"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }, { skill: ["prem"] }];
+            var skills = [];
+            // const Http = new XMLHttpRequest();
+            // const url = 'http://127.0.0.1:1000/level/getEmployee';
+            // Http.open("GET", url);
+            // Http.send();
+            // Http.onreadystatechange = function () {
+            //     if (this.readyState == 4 && this.status == 200) {
+            //         Employee = JSON.parse(Http.responseText);
+            //         for (let emp in Employee) {
+            //             levels.push(Employee[emp].name);
+            //             skills.push(Employee[emp].skills);
+            //         }
+            //         // console.log(Employee);
+            //     }
+
+
+
+            // }
+
+            var c = window.localStorage.getItem('emp');
+            Employee = JSON.parse(c);
+            for (let emp in Employee) {
+                levels.push(Employee[emp].name);
+                skills.push(Employee[emp].skills);
+            }
+            console.log(Employee);
+            console.log(levels);
+            console.log(skills);
+            // console.log("in employees");
+            // console.log(c);
+            //fetch details from backend and store it in levels(name and skills)
+            // const Http = new XMLHttpRequest();
+            //  const url = 'http://127.0.0.1:1000/level/getProjectSkills';
+            // Http.open("GET", url);
+            // Http.send();
+            // Http.onreadystatechange = function () {
+            //     if (this.readyState == 4 && this.status == 200) {
+            //         var response = JSON.parse(Http.responseText);
+            //         text1.text = "Manager\n " + "project Type: " + response[0].name + "     " + "\nSkills: " + response[0].skills + "\nproject Type: " + response[1].name + "     " + "Skills: " + response[1].skills + "\nproject Type: " + response[2].name + "     " + "Skills: " + response[2].skills;
+            //         // console.log(response[0].name);
+            //         // console.log("\n")
+            //         // console.log(response[0].skills);
+            //     }
+            // }
+            var manager = new BABYLON.GUI.GUI3DManager(scene);
+            var panel = new BABYLON.GUI.PlanePanel();
+            panel.margin = 0.1;
+            manager.addControl(panel);
+            panel.linkToTransformNode(anchor);
+            panel.position.x = 2.5;
+            panel.position.y = 1;
+            Writer = BABYLON.MeshWriter(scene, { scale: scale });
+            text1 = new Writer(
+                "Employees",
+                {
+                    "anchor": "center",
+                    "letter-height": 5,
+                    "color": "#15F4EE",
+                    "position": {
+                        "z": 10,
+                    }
+                }
+            );
+            var tmesh = text1.getMesh();
+            tmesh.position.y = -0.2;
+            tmesh.rotation = new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, -Math.PI / 2);
+            var hl = new BABYLON.HighlightLayer("hl1", scene);
+            hl.addMesh(tmesh, BABYLON.Color3.FromInts(21, 244, 238));
+            var addButton = function (name) {
+
+                var button = new BABYLON.GUI.HolographicButton(name, "orientation");
+                gridbutton[name] = button;
+                panel.addControl(button);
+                // button.backMaterial.albedoColor = BABYLON.Color3.Red()
+
+                button.onPointerDownObservable.add(function () {
+                    console.log(button);
+                    // window.location.href = "level/level" + name;
+                    console.log(button.name);
+                    // button.backMaterial.albedoColor = BABYLON.Color3.Green();
+                    // action(button.name);
+                    alert(levels[name]);
+                });
+                button.onPointerUpObservable.add(function () {
+
+                });
+                button.onPointerEnterObservable.add(function () {
+
+                });
+                button.onPointerOutObservable.add(function () {
+
+                });
+                button.onPointerMoveObservable.add(function () {
+
+                });
+                var text1 = new BABYLON.GUI.TextBlock();
+                // var skill = "kestrel"
+                var str = "\nSkills:       ";
+                for (let i in skills[name]) {
+                    str += "\n" + skills[name][i];
+                }
+                // text1.text = "Employee : " + levels[name - 1] + "\n" + skills[name - 1] + "\npushpa" + "\npushpa" + "\npushpa" + "\npushpa" + "\npushpa" + "\npushpa" + "\npushpa";
+                text1.text = "Employee : " + levels[name - 1] + str;
+                text1.color = "#15F4EE";
+                text1.fontSize = 25;
+                button.content = text1;
+                // button.backMaterial.albedoColor = BABYLON.Color3.Black();
+            }
+
+            // panel.blockLayout = true;
+            for (var index = 0; index < 6; index++) {
+                addButton(index);
+            }
+            panel.blockLayout = false;
+
+            var panel1 = new BABYLON.GUI.PlanePanel();
+            panel1.margin = 0.1;
+
+            manager.addControl(panel1);
+            panel1.linkToTransformNode(anchor);
+            panel1.position.x = 2.5;
+            panel1.position.y = -1;
+
+            var action = function (name) {
+                console.log(gridbutton[name]);
+                // gridbutton[name].backMaterial.albedoColor = BABYLON.Color3.Green();
+                console.log("in action");
+            }
+            var addButton1 = function (name) {
+                var button1 = new BABYLON.GUI.HolographicButton(name, "orientation");
+                gridbutton[name] = button1;
+                gridbutton[0].backMaterial.albedoColor = BABYLON.Color3.Green();
+                panel1.addControl(button1);
+                var str = "\nSkills:       ";
+                for (let i in skills[name]) {
+                    str += "\n" + skills[name][i];
+                }
+                var text2 = new BABYLON.GUI.TextBlock();
+                text2.text = "Employee : " + levels[name] + str;
+                text2.color = "#15F4EE";
+                text2.fontSize = 25;
+                button1.content = text2;
+                // button1.backMaterial.albedoColor = BABYLON.Color3.Black()
+                button1.onPointerDownObservable.add(function () {
+                    // var v = "level/level" + name;
+                    // window.location.href = v;
+                    // button1.backMaterial.albedoColor = BABYLON.Color3.Green()
+                    action(button1.name);
+                    alert(levels[name]);
+
+                });
+                button1.onPointerUpObservable.add(function () {
+
+                });
+                button1.onPointerEnterObservable.add(function () {
+
+                });
+                button1.onPointerOutObservable.add(function () {
+
+
+                });
+                button1.onPointerMoveObservable.add(function () {
+                    var v = button1.name;
+                });
+                gridbutton[name] = button1;
+            }
+            for (var index = 6; index < 12; index++) {
+                addButton1(index);
+            }
+            console.log(gridbutton);
+            return scene;
+        };
+
+
+        engine = createDefaultEngine();
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();
+
+        engine.runRenderLoop(function () {
+            if (scene) {
+                scene.render();
+            }
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+
+</html>
