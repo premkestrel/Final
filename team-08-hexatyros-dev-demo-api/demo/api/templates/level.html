@@ -59,25 +59,23 @@
             camera.attachControl(canvas, true);
             var scale = 0.1, MeshWriter, text1, text2, text3, text4;
 
-            // var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
-            // var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-            // skyboxMaterial.backFaceCulling = false;
-            // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("https://cdna.artstation.com/p/assets/images/images/002/579/818/large/sebastian-hamza-16.jpg?1463336409", scene);
-            // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-            // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-            // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-            // skybox.material = skyboxMaterial;
+            var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
+            var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+            skyboxMaterial.backFaceCulling = false;
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("https://cdna.artstation.com/p/assets/images/images/002/579/818/large/sebastian-hamza-16.jpg?1463336409", scene);
+            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+            skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            skybox.material = skyboxMaterial;
 
-            scene.clearColor = new BABYLON.Color3.FromInts(128, 128, 128);
-            // scene.clearColor = BABYLON.Color3.White();
-            var levels = ["Skill match", "level detail 2", "level detail 3", "level detail 4", "level detail 5", "level detail 6", "level detail 7", "level detail 8", "level detail 9", "level detail 10"];
+            var levels = ["Skill Match", "Grant Leave", "Replacement", " Group Discussion", "Front 2 Back"];
             var manager = new BABYLON.GUI.GUI3DManager(scene);
             var panel = new BABYLON.GUI.PlanePanel();
             panel.margin = 0.3;
             manager.addControl(panel);
             panel.linkToTransformNode(anchor);
             panel.position.x = 3.9;
-            panel.position.y = 1;
+            panel.position.y = -0.2;
 
             Writer = BABYLON.MeshWriter(scene, { scale: scale });
             text1 = new Writer(
@@ -85,39 +83,34 @@
                 {
                     "anchor": "center",
                     "letter-height": 5,
-                    "color": "#15F4EE",
+                    "color": "#000",
                     "position": {
                         "z": 10,
                     }
                 }
             );
             var tmesh = text1.getMesh();
-            tmesh.position.y = -0.2;
+            tmesh.position.y = 1;
             tmesh.rotation = new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, -Math.PI / 2);
             var hl = new BABYLON.HighlightLayer("hl1", scene);
-            hl.addMesh(tmesh, BABYLON.Color3.FromInts(21, 244, 238));
+            hl.addMesh(tmesh, BABYLON.Color3.FromInts(255, 255, 255));
             var addButton = function (name) {
                 var button = new BABYLON.GUI.HolographicButton(name, "orientation");
 
                 panel.addControl(button);
                 button.onPointerDownObservable.add(function () {
                     window.location.href = "level/level" + name;
-
                     // var hl = new BABYLON.HighlightLayer("hl1", scene);
                     // hl.addMesh(button, BABYLON.Color3.Green());
                 });
                 button.onPointerUpObservable.add(function () {
                     // textblock.text = "Up!";
-
                 });
                 button.onPointerEnterObservable.add(function () {
                     // textblock.text = "Enter!";
-
-
                 });
                 button.onPointerOutObservable.add(function () {
                     // textblock.text = "Out!";
-
                 });
                 button.onPointerMoveObservable.add(function () {
                     var v = button.name;
@@ -163,68 +156,42 @@
             }
             panel.blockLayout = false;
 
-            var panel1 = new BABYLON.GUI.PlanePanel();
-            panel1.margin = 0.3;
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI();
+            advancedTexture.rootContainer.scaleX = window.devicePixelRatio;
+            advancedTexture.rootContainer.scaleY = window.devicePixelRatio;
+            var button3 = BABYLON.GUI.Button.CreateSimpleButton("but1","Instructions");
+            advancedTexture.addControl(button3);
+            button3.top = "175px";
+            //button3.left = "0px";
+            button3.width = '120px';
+            button3.height = '40px';
+            button3.cornerRadius = 5;
+            button3.color = "rgb(128,0,128)";
+            button3.fontSize = 20;
+            button3.fontFamily = "Georgia";
+            button3.thickness = 0;
+            button3.textBlock.outlineWidth = 8;
+            // button3.paddingLeft="-945px";
+            // button3.paddingTop="-570px";
+            
+            var oc = "rgb(169,169,169)";
+            button3.textBlock.outlineColor = oc;
+            advancedTexture.addControl(button3);
+            fred = setInterval(function () {
+                button3.textBlock.outlineColor = (button3.textBlock.outlineColor == oc ? "black" : oc);
+            }, 2000);
 
-            manager.addControl(panel1);
-            panel1.linkToTransformNode(anchor);
-            panel1.position.x = 3.9;
-            panel1.position.y = -1;
-            var addButton1 = function (name) {
-                var button1 = new BABYLON.GUI.HolographicButton(name, "orientation");
-                panel1.addControl(button1);
-                var text2 = new BABYLON.GUI.TextBlock();
-                text2.text = "Level " + name + "\n" + levels[name - 1];
-                text2.color = "#15F4EE";
-                text2.fontSize = 30;
-                button1.content = text2;
-                button1.onPointerDownObservable.add(function () {
-                    var v = "level/level" + name;
-                    window.location.href = v;
+            scene.onDispose = function () { clearInterval(fred) };
 
-                });
-                button1.onPointerUpObservable.add(function () {
-                    // textblock.text = "Up!";
+            var scale = 0.6;
+            
+            button3.onPointerUpObservable.add(function () {
+                window.location.href = "/level";
+            });
 
-                });
-                button1.onPointerEnterObservable.add(function () {
-                    // textblock.text = "Enter!";
-
-
-                });
-                button1.onPointerOutObservable.add(function () {
-                    // textblock.text = "Out!";
-
-                });
-                button1.onPointerMoveObservable.add(function () {
-                    var v = button1.name;
-                    //     switch (v) {
-                    //         case 6:
-                    //             alert("button " + v);
-                    //             break;
-                    //         case 7:
-                    //             alert("button " + v);
-                    //             break;
-                    //         case 8:
-                    //             alert("button " + v);
-                    //             break;
-                    //         case 9:
-                    //             alert("button " + v);
-                    //             break;
-                    //         case 10:
-                    //             alert("button " + v);
-                    //             break;
-
-                    //     }
-                    //     console.log(button1.name);
-                });
-            }
-            for (var index = 6; index < 11; index++) {
-                addButton1(index);
-            }
+            
             return scene;
         };
-
 
         engine = createDefaultEngine();
         if (!engine) throw 'engine should not be null.';
