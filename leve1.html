@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>Babylon.js sample code</title>
+    <title>Manager Simulator</title>
 
     <!-- Babylon.js -->
     <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
@@ -24,6 +24,9 @@
     <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
     <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/meshwriter@1.2.3/dist/meshwriter.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
+
     <style>
         html,
         body {
@@ -238,107 +241,12 @@
 
 
 
-            var plane6 = BABYLON.Mesh.CreatePlane("plane6", 40);
-            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane6);
-            var textstring = " 1.CLIENT "
-            var text1 = new BABYLON.GUI.TextBlock();
-            text1.text = textstring;
-            text1.fontStyle = " Bold";
-            text1.color = "grey";
-            text1.fontSize = 14;
-            advancedTexture.addControl(text1);
-            plane6.position.y = 2.9;
-            plane6.position.z = 10;
-            plane6.position.x = 10.4;
-
-
-
-
-
-            //// for manager text
-
-            var plane6 = BABYLON.Mesh.CreatePlane("plane6", 40);
-            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane6);
-
-            var textstring = " 2.MANAGER "
-            var text1 = new BABYLON.GUI.TextBlock();
-            text1.text = textstring;
-            text1.fontStyle = " Bold";
-            text1.color = "grey";
-            text1.fontSize = 14;
-            var text2 = new BABYLON.GUI.TextBlock();
-            text2.text = textstring;
-            text2.fontStyle = " Bold";
-            text2.color = "purple";
-            text2.fontSize = 14;
-            advancedTexture.addControl(text2);
-            advancedTexture.addControl(text1);
-            plane6.position.y = -5.5;
-            plane6.position.z = 10;
-            plane6.position.x = 10.1;
-
-            // var count = 0;
-
-            ////// for employee text 
-            var plane6 = BABYLON.Mesh.CreatePlane("plane6", 40);
-            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane6);
-
-            var textstring = " 4.Work "
-            var text1 = new BABYLON.GUI.TextBlock();
-            text1.text = textstring;
-            text1.fontStyle = " Bold";
-            text1.color = "grey";
-            text1.fontSize = 14;
-            var text2 = new BABYLON.GUI.TextBlock();
-            text2.text = textstring;
-            text2.fontStyle = " Bold";
-            text2.color = "blue";
-            text2.fontSize = 14;
-            advancedTexture.addControl(text2);
-            advancedTexture.addControl(text1);
-            plane6.position.y = 3;
-            plane6.position.z = 10;
-            plane6.position.x = -10.3;
-
-
-
-            //// for work text
-            var plane6 = BABYLON.Mesh.CreatePlane("plane6", 40);
-            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane6);
-
-            var textstring = " 3.Employees "
-            var text1 = new BABYLON.GUI.TextBlock();
-            text1.text = textstring;
-            text1.fontStyle = " Bold";
-            text1.color = "grey";
-            text1.fontSize = 14;
-            var text2 = new BABYLON.GUI.TextBlock();
-            text2.text = textstring;
-            text2.fontStyle = " Bold";
-            text2.color = "blue";
-            text2.fontSize = 14;
-            advancedTexture.addControl(text2);
-            advancedTexture.addControl(text1);
-            plane6.position.y = -5.5;
-            plane6.position.z = 10;
-            plane6.position.x = -10.5;
-
-
             //////////////////////////////////////////////////////////////////
             var urlList = [
                 "http://doc.babylonjs.com/",
                 "http://www.google.com/",
                 "https://github.com/BabylonJS/Babylon.js/",
             ];
-
-            // var textures = [
-            //     // "https://upload.wikimedia.org/wikipedia/commons/e/ef/Icono_Normativa.png",
-            //     "https://i.imgur.com/Pox1X97.png"
-            //     // "https://upload.wikimedia.org/wikipedia/commons/1/10/IC_engine.JPG",
-            //     // "https://upload.wikimedia.org/wikipedia/commons/e/ef/Icono_Normativa.png"
-
-            // ];
-
             var textures = [
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcScosMwZ9y8ZlviQ-QCRg_VE0pOYu_LddT9h164XbpLuRz0K6rx",
                 "data:image/jpeg;base64,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"
@@ -401,13 +309,39 @@
                     if (employeelist.indexOf(bemplist[parseInt(pickedMesh.name) - 500]) == -1) {
                         // console.log("while pushing" + Employee[parseInt(pickedMesh.name) - 4])
                         employeelist.push(bemplist[parseInt(pickedMesh.name) - 500]);
-                        alert("employee added");
+                        swal({
+                            title: "Team Allocation",
+                            text: "Employee is added successfully",
+                            icon: "success"
+                        })
 
                     } else {
-                        var result = confirm("Employee already added want to remove?")
-                        if (result == true) {
-                            employeelist.pop(Employee[parseInt(pickedMesh.name) - 500]);
-                        }
+                        swal({
+                            title: "Employee will be  removed from the project",
+                            text: "Are you sure to proceed?",
+                            type: "warning",
+                            buttons: {
+                                cancel: true,
+                                OK: {
+                                    text: "Remove",
+                                    value: true
+                                }
+
+                            },
+                            dangerMode: true
+                            // showCancelButton: true,   
+                            // confirmButtonColor: "#DD6B55",   
+                            // confirmButtonText: "Yes, Remove My Account!",   
+                            // cancelButtonText: "No, I am not sure!",   
+                        }).then((isConfirm) => {
+                            if (isConfirm) {
+                                employeelist.pop(Employee[parseInt(pickedMesh.name) - 500]);
+                                swal({ title: "Employee Removed!", text: "Employee is removed from the project", icon: "success" });
+                            }
+                            else {
+                                swal({ title: "Canceled", text: "Employee is not removed!", icon: "error" });
+                            }
+                        });
 
                         // alert("employee already added");
                     }
@@ -431,20 +365,20 @@
             }
             var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
             line1 = new BABYLON.GUI.Line();
-            line1.x1 = 2500;
-            line1.y1 = 360;
-            line1.x2 = 2500;
-            line1.y2 = 850;
+            line1.x1 = 1270;
+            line1.y1 = 230;
+            line1.x2 = 1270;
+            line1.y2 = 490;
             line1.lineWidth = 50;
             line1.dash = [25, 10];
             line1.color = "yellow";
             line1.isVisible = false;
             advancedTexture.addControl(line1);
             line2 = new BABYLON.GUI.Line();
-            line2.x1 = 400;
-            line2.y1 = 1000;
-            line2.x2 = 2350;
-            line2.y2 = 1000;
+            line2.x1 = 165;
+            line2.y1 = 570;
+            line2.x2 = 1200;
+            line2.y2 = 570;
             line2.lineWidth = 50;
             line2.dash = [25, 10];
             line2.color = "yellow";
@@ -452,10 +386,10 @@
 
             advancedTexture.addControl(line2);
             line3 = new BABYLON.GUI.Line();
-            line3.x1 = 260;
-            line3.y1 = 350;
-            line3.x2 = 260;
-            line3.y2 = 875;
+            line3.x1 = 100;
+            line3.y1 = 230;
+            line3.x2 = 100;
+            line3.y2 = 490;
             line3.lineWidth = 50;
             line3.dash = [25, 10];
             line3.color = "yellow";
@@ -559,7 +493,7 @@
                         // hl.removeMesh(pickedMesh);
                         advancedTexture.removeControl(rectangle);
                         rectangle.removeControl(textrr);
-                        // advancedTexture.addControl(rectangle);
+                        // advancedTexture.addControl(rectangle); 
                         // hl.addMesh(cylinder2, BABYLON.Color3.Green());
                         flag1 = 1;
 
@@ -605,13 +539,17 @@
                         Http.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 200) {
                                 var response = Http.responseText;
-                                // console.log(response);
-                                if (response == "allocated") {
-                                    // console.log("work completed");
-                                    alert("work completed");
+                                console.log(response);
+                                if (response == "Allocated" && employeelist.length != 0) {
+                                    swal({
+                                        title: "Game Message",
+                                        text: "Work Completed",
+                                        icon: "success"
+                                    })
+
                                 } else {
-                                    // text1.text = "Work incompleted.
-                                    alert("work incompleted");
+
+                                    swal({ title: "Game Message", text: "Work InComplete", icon: "error" });
                                 }
 
                                 // console.log(response);
@@ -634,7 +572,7 @@
                     if (flag4 == 0) {
                         advancedTexture.removeControl(rectangle);
                         rectangle.removeControl(textrr);
-                        window.location.href = "/level/level1/Employees";
+                        // window.location.href = "/level/level1/Employees";
                         al = -0.5;
                         bt = -1.5;
                         id = setInterval(framefor, 5);
@@ -654,8 +592,8 @@
                         hl.addMesh(cylinder3, BABYLON.Color3.Green());
                         rmattr();
                         p1 = -4.5;
-                        p2 = -1.5;
-                        al = -0.5;
+                        p2 = -1.75;
+                        al = -0.25;
                         bt = -1.5;
                         flag4 = 0;
                     }
@@ -666,7 +604,9 @@
             /////////////framefor
             function framefor() {
                 // console.log("position.x =" + pos2 + " position.y = " + pos1);
-                if (pos1 == 0 && pos2 == 0) {
+                if (pos1 == 0 || pos2 == 0) {
+                    pos2 = 0;
+                    pos1 = 0;
                     pickedMesh.position.x = pos2;
                     pickedMesh.position.y = pos1;
                     clearInterval(id);
@@ -693,7 +633,10 @@
             /////////////////////////frameback//////////////////////
             function frameback() {
                 // console.log("position.x =" + pos2 + " position.y = " + pos1);
-                if (pos1 == p2 && pos2 == p1) {
+                if (pos1 == p2 || pos2 == p1) {
+                    pos1 = -4.5;
+                    pos2 = -1.75;
+
                     pickedMesh.position.x = p1;
                     pickedMesh.position.y = p2;
                     clearInterval(id);
@@ -906,7 +849,7 @@
 
             hl.addMesh(cylinder1, BABYLON.Color3.Green());
             cylinder1.position.x = 4.5;
-            cylinder1.position.y = 2;
+            cylinder1.position.y = 1.5;
             cylinder1.position.z = 2;
             cylinder1.rotation.x = 1.56;
             cylinder1.addRotation(0, Math.PI, 0);
@@ -925,7 +868,7 @@
             //////////////////cylinder 2////////////////////////
             cylinder2 = BABYLON.MeshBuilder.CreateCylinder(1, { radius: 0.1, height: 0.1 }, scene);
             cylinder2.position.x = 4.5;
-            cylinder2.position.y = -1.5;//
+            cylinder2.position.y = -1.75;//
             cylinder2.position.z = 2;
             cylinder2.rotation.x = 1.56;
             cylinder2.addRotation(0, Math.PI, 0);
@@ -941,7 +884,7 @@
             //////////////////cylinder 3////////////////////////
             cylinder3 = BABYLON.MeshBuilder.CreateCylinder(2, { radius: 0.1, height: 0.1 }, scene);
             cylinder3.position.x = -4.5;
-            cylinder3.position.y = 2;
+            cylinder3.position.y = 1.5;
             cylinder3.position.z = 2;
             cylinder3.rotation.x = 1.56;
             cylinder3.addRotation(0, Math.PI, 0);
@@ -958,7 +901,7 @@
             cylinder4 = BABYLON.MeshBuilder.CreateCylinder(3, { radius: 0.1, height: 0.1 }, scene);
             // console.log(cylinder4);
             cylinder4.position.x = -4.5;
-            cylinder4.position.y = -1.5;
+            cylinder4.position.y = -1.75;
             cylinder4.position.z = 2;
             cylinder4.rotation.x = 1.56;
             cylinder4.addRotation(0, Math.PI, 0);
@@ -971,6 +914,31 @@
             cylinder4.actionManager.registerAction(
                 new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, tooltip(cylinder4))
             );
+
+
+            var createLabel = function (name) {
+                var label = new BABYLON.GUI.Rectangle("label");
+                label.height = "30px";
+                label.width = "100px";
+                label.alpha = "0.4"
+                console.log(cylinder1)
+                label.linkOffsetY = 80;
+                advancedTexture.addControl(label);
+                if (name === "1.Client") label.linkWithMesh(cylinder1);
+                if (name === "2.Manager") label.linkWithMesh(cylinder2);
+                if (name === "3.Employee") label.linkWithMesh(cylinder4);
+                if (name === "4.Work") label.linkWithMesh(cylinder3);
+
+                var text1 = new BABYLON.GUI.TextBlock();
+                text1.text = name;
+                text1.color = "white";
+                label.addControl(text1);
+            }
+            createLabel("1.Client");
+            createLabel("2.Manager");
+            createLabel("3.Employee");
+            createLabel("4.Work");
+
             var empinfo = function (text, cc) {
                 // var plane2 = BABYLON.Mesh.CreatePlane("plane2", 0.5);
                 // plane2.position.y = 0;
@@ -989,44 +957,6 @@
 
 
             }
-
-            //////////////////////////////////////////
-            // var cylinder1;
-            // for (let i = 0; i < 4; i++) {
-            //     cylinder1[i] = BABYLON.Mesh.CreateCylinder(2, { radius: 0.1, height: 0.1 }, scene);
-            //     cylinder1[i].position.x = 4.5;
-            //     cylinder1[i].position.y = -2;
-            //     cylinder1[i].position.z = 2;
-            //     cylinder1[i].rotation.x = 1.56;
-            //     cylinder1[i].addRotation(0, Math.PI, 0);
-            //     cylinder1[i].material = new BABYLON.StandardMaterial("mat_" + i, scene);
-            //     cylinder1[i].material.diffuseTexture = new BABYLON.Texture(textures[i]);
-            //     cylinder1[i].actionManager = new BABYLON.ActionManager(scene);
-            //     cylinder1[i].actionManager.registerAction(
-            //         new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, pickCylinder)
-            //     );
-
-            // }
-
-            ///////////////////center////////////////////////////////////
-            // var cylinder5 = BABYLON.MeshBuilder.CreateCylinder(5, { radius: 0.1, height: 0.1 }, scene);
-            // // cylinder.position.y = Math.sin(angle);
-            // // cylinder.position.x = Math.cos(angle);
-            // // cylinder.rotation.x = Math.PI / 2;
-            // cylinder5.position.z = 2;
-            // cylinder5.position.y = 0;
-            // cylinder5.position.x = 0;
-            // cylinder5.rotation.x = 1.56;
-            // cylinder5.addRotation(0, Math.PI, 0);
-            // cylinder5.material = new BABYLON.StandardMaterial("mat_" + 0, scene);
-            // cylinder5.material.diffuseTexture = new BABYLON.Texture(textures[0]);
-            // // add actionManager on each cyl
-            // cylinder5.actionManager = new BABYLON.ActionManager(scene);
-            // // register 'pickCylinder' as the handler function for cylinder picking action.
-            // cylinder5.actionManager.registerAction(
-            //     new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, pickCylinder)
-            // );
-
             scene.registerBeforeRender(function () {
                 // cylinder1.rotation.y += 0.1;
 
